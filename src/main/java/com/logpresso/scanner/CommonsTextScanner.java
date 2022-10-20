@@ -1,37 +1,23 @@
 package com.logpresso.scanner;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.logpresso.scanner.utils.FileUtils;
+import com.logpresso.scanner.utils.IoUtils;
+import com.logpresso.scanner.utils.StringUtils;
+import com.logpresso.scanner.utils.ZipUtils;
+
+import java.io.*;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import com.logpresso.scanner.utils.FileUtils;
-import com.logpresso.scanner.utils.IoUtils;
-import com.logpresso.scanner.utils.StringUtils;
-import com.logpresso.scanner.utils.ZipUtils;
-
-public class Log4j2Scanner {
-	public static final String VERSION = "3.0.2";
-	public static final String RELEASE_DATE = "2022-02-14";
-	public static final String BANNER = "Logpresso CVE-2021-44228 Vulnerability Scanner " + VERSION + " (" + RELEASE_DATE + ")";
+public class CommonsTextScanner extends Log4j2Scanner {
 
 	private static final boolean isWindows = File.separatorChar == '\\';
 
@@ -40,20 +26,14 @@ public class Log4j2Scanner {
 	private Detector detector;
 	private LogGenerator logGenerator;
 
-
 	public int run(Configuration config) throws Exception {
 		this.config = config;
 		metrics = new Metrics(config.getThrottle());
 
 		if (config.isFix() && !config.isForce()) {
 			try {
-				if (config.isScanForLog4j1()) {
-					System.out.print("This command will remove JndiLookup.class from log4j2-core binaries and "
-							+ "remove JMSSink.class, JMSAppender.class, SocketServer.class, SMTPAppender.class, SMTPAppender$1.class, JDBCAppender.class, org.apache.log4j.chainsaw package "
-							+ "from log4j1-core binaries. Are you sure [y/N]? ");
-				} else {
-					System.out.print("This command will remove JndiLookup.class from log4j2-core binaries. Are you sure [y/N]? ");
-				}
+				System.out.print("This command will remove StringSubstitutor.class from binaries. Are you sure [y/N]? ");
+
 				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 				String answer = br.readLine();
 				if (!answer.equalsIgnoreCase("y")) {
@@ -70,87 +50,6 @@ public class Log4j2Scanner {
 			return restore(config.getRestorePath());
 		} else {
 			return scanAndFix();
-		}
-	}
-
-	public int restore(File backupFile) throws IOException {
-
-		System.out.println("");
-
-		ZipInputStream zis = null;
-		try {
-			zis = new ZipInputStream(new FileInputStream(backupFile));
-			while (true) {
-				ZipEntry entry = zis.getNextEntry();
-				if (entry == null)
-					break;
-
-				String path = entry.getName();
-				if (isWindows)
-					path = path.charAt(0) + ":" + path.substring(1);
-
-				File targetFile = new File(path);
-				restore(zis, targetFile);
-			}
-		} finally {
-			IoUtils.ensureClose(zis);
-		}
-		return 0;
-	}
-
-	private void restore(InputStream is, File targetFile) {
-		// set writable if file is read-only
-		boolean readonlyFile = false;
-		if (!targetFile.canWrite()) {
-			readonlyFile = true;
-			if (!targetFile.setWritable(true)) {
-				reportError(targetFile, "No write permission. Cannot remove read-only attribute");
-				return;
-			}
-		}
-
-		// copy backup file content
-		FileOutputStream fos = null;
-		boolean lockError = true;
-		boolean truncateError = true;
-		try {
-			// check lock first
-			FileUtils.checkLock(targetFile);
-			lockError = false;
-
-			long originalBytes = targetFile.length();
-
-			// keep inode as is for symbolic link
-			FileUtils.truncate(targetFile);
-			truncateError = false;
-
-			fos = new FileOutputStream(targetFile);
-			long transferBytes = FileUtils.transfer(is, fos);
-
-			DecimalFormat formatter = new DecimalFormat("###,###");
-			String before = formatter.format(originalBytes);
-			String after = formatter.format(transferBytes);
-			System.out.printf("Restored: %s (%s => %s bytes)%n", targetFile.getAbsolutePath(), before, after);
-		} catch (Throwable t) {
-			if (lockError) {
-				System.out.println("Cannot lock file " + t.getMessage());
-			} else if (truncateError) {
-				System.out.println("Cannot truncate file " + t.getMessage());
-			} else {
-				System.out.println("Cannot restore file " + t.getMessage());
-			}
-
-			if (config.isDebug())
-				t.printStackTrace();
-
-		} finally {
-			IoUtils.ensureClose(fos);
-
-			// restore read only attribute
-			if (readonlyFile) {
-				if (!targetFile.setReadOnly())
-					System.out.println("Error: File cannot be set as read only - " + targetFile.getAbsolutePath());
-			}
 		}
 	}
 
@@ -253,7 +152,7 @@ public class Log4j2Scanner {
 			System.out.println("Found " + detector.getMitigatedFileCount() + " mitigated files");
 			if (config.isFix())
 				System.out.println("Fixed " + metrics.getFixedFileCount()
-						+ " vulnerable log4j2 files and potentially vulnerable log4j1 files");
+						+ " vulnerable files");
 
 			System.out.printf("Completed in %.2f seconds\n", elapsed / 1000.0);
 		}
@@ -268,13 +167,6 @@ public class Log4j2Scanner {
 			// vulnerableFileCount == 0 && potentiallyVulnerableFileCount == 0
 			return 0;
 		}
-	}
-
-	protected String getExcludeDescription() {
-		String excludeMsg = "";
-		if (!config.getExcludePathPrefixes().isEmpty())
-			excludeMsg = " (without " + StringUtils.join(config.getExcludePathPrefixes(), ", ") + ")";
-		return excludeMsg;
 	}
 
 	protected void fix() {
@@ -406,7 +298,7 @@ public class Log4j2Scanner {
 
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		String timestamp = df.format(new Date(metrics.getScanStartTime()));
-		File f = new File("log4j2_scan_backup_" + timestamp + "." + config.getBackupExtension());
+		File f = new File("commonstext_scan_backup_" + timestamp + "." + config.getBackupExtension());
 		if (config.getBackupPath() != null)
 			f = config.getBackupPath();
 
@@ -446,153 +338,4 @@ public class Log4j2Scanner {
 		}
 	}
 
-	protected void traverse(File f, int depth) {
-		if (!config.isSilent() && metrics.canStatusReporting())
-			printScanStatus();
-
-		String path = f.getAbsolutePath();
-
-		if (depth == 0 && !f.exists()) {
-			reportError(f, "File not found");
-			return;
-		}
-
-		if (f.isDirectory()) {
-			metrics.setLastVisitDirectory(f);
-
-			if (isExcluded(path)) {
-				if (config.isTrace())
-					System.out.println("Skipping excluded directory: " + path);
-
-				return;
-			}
-
-			if (depth > 0 && FileUtils.isSymlink(f)) {
-				if (config.isTrace())
-					System.out.println("Skipping symlink: " + path);
-
-				return;
-			}
-
-			if (isExcludedDirectory(path)) {
-				if (config.isTrace())
-					System.out.println("Skipping directory: " + path);
-
-				return;
-			}
-
-			if (config.isTrace())
-				System.out.println("Scanning directory: " + path);
-
-			metrics.addScanDirCount();
-
-			DirectoryStream<Path> stream = null;
-			Iterator<Path> it = null;
-			try {
-				stream = Files.newDirectoryStream(f.toPath());
-				it = stream.iterator();
-
-				while (it.hasNext()) {
-					Path p = it.next();
-					traverse(p.toFile(), depth + 1);
-				}
-			} catch (AccessDeniedException e) {
-				reportError(f, "Access denied", e);
-			} catch (IOException e) {
-				String msg = e.getClass().getSimpleName() + " - " + e.getMessage();
-				reportError(f, msg, e);
-			} finally {
-				IoUtils.ensureClose(stream);
-			}
-		} else {
-			metrics.addScanFileCount();
-
-			if (!config.getExcludeFilePaths().isEmpty() && config.getExcludeFilePaths().contains(path.toLowerCase())) {
-				if (config.isTrace())
-					System.out.println("Skipping file (excluded file): " + path);
-			} else if (config.isNoSymlink() && FileUtils.isSymlink(f)) {
-				if (config.isTrace())
-					System.out.println("Skipping symlink: " + path);
-			} else if (ZipUtils.isScanTarget(path, config.isScanZip())) {
-				// skip WinRAR file
-				if (isWinRarFile(f)) {
-					if (config.isTrace())
-						System.out.println("Skipping file (winrar): " + path);
-
-					return;
-				}
-
-				if (config.isTrace())
-					System.out.println("Scanning file: " + path);
-
-				detector.scanJarFile(f, config.isFix());
-			} else {
-				if (config.isTrace())
-					System.out.println("Skipping file: " + path);
-			}
-		}
-	}
-
-	protected boolean isWinRarFile(File f) {
-		try {
-			// 0x52617221 is 'RAR!'
-			return FileUtils.readMagic(f) == 0x52617221;
-		} catch (Throwable t) {
-			return false;
-		}
-	}
-
-	protected void printScanStatus() {
-		long now = System.currentTimeMillis();
-		int elapsed = (int) ((now - metrics.getScanStartTime()) / 1000);
-		System.out.printf("Running scan (%ds): scanned %d directories, %d files, last visit: %s%n", elapsed,
-				metrics.getScanDirCount(), metrics.getScanFileCount(), metrics.getLastVisitDirectory().getAbsolutePath());
-
-		metrics.setLastStatusLogging();
-	}
-
-	private boolean isExcludedDirectory(String path) {
-		if (isWindows && path.toUpperCase().indexOf("$RECYCLE.BIN") == 3)
-			return true;
-
-		return (path.equals("/proc") || path.startsWith("/proc/")) || (path.equals("/sys") || path.startsWith("/sys/"))
-				|| (path.equals("/dev") || path.startsWith("/dev/")) || (path.equals("/run") || path.startsWith("/run/"))
-				|| (path.equals("/var/run") || path.startsWith("/var/run/"));
-	}
-
-	protected boolean isExcluded(String path) {
-		if (isWindows)
-			path = path.toUpperCase();
-
-		for (String excludePath : config.getExcludePathPrefixes()) {
-			if (path.startsWith(excludePath))
-				return true;
-		}
-
-		for (String excludePattern : config.getExcludePatterns()) {
-			if (path.contains(excludePattern))
-				return true;
-		}
-
-		return false;
-	}
-
-	protected void reportError(File f, String msg) {
-		reportError(f, msg, null);
-	}
-
-	protected void reportError(File f, String msg, Throwable t) {
-		metrics.addErrorCount();
-
-		// null if --restore mode
-		if (detector != null)
-			detector.addErrorReport(f, msg);
-
-		System.out.println("Error: " + msg + ". Skipping " + f.getAbsolutePath());
-
-		if (config.isDebug() && t != null) {
-			if (!(t instanceof AccessDeniedException))
-				t.printStackTrace();
-		}
-	}
 }

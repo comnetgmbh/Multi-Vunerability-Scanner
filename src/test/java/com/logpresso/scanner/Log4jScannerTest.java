@@ -22,7 +22,7 @@ public class Log4jScannerTest {
 
 	@Test
 	public void scanVariousVersions_log4j2() throws Exception {
-		Log4j2Scanner scanner = new Log4j2Scanner();
+		MultiScanner scanner = new MultiScanner();
 		int returnCode = scanner.run(new String[] { getTestFiles("log4j2") });
 
 		assertEquals(1, returnCode);
@@ -63,7 +63,7 @@ public class Log4jScannerTest {
 
 	@Test
 	public void scanSafeVersion_log4j2() throws Exception {
-		Log4j2Scanner scanner = new Log4j2Scanner();
+		MultiScanner scanner = new MultiScanner();
 		int returnCode = scanner.run(new String[] { getTestFiles("log4j2-ok") });
 		assertEquals(0, returnCode);
 		String log = systemOutRule.getLog();
@@ -75,7 +75,7 @@ public class Log4jScannerTest {
 
 	@Test
 	public void scanVariousVersions_log4j1() throws Exception {
-		Log4j2Scanner scanner = new Log4j2Scanner();
+		MultiScanner scanner = new MultiScanner();
 		int returnCode = scanner.run(new String[] { "--scan-log4j1", getTestFiles("log4j1") });
 
 		assertEquals(1, returnCode);

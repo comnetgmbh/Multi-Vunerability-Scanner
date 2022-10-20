@@ -35,6 +35,7 @@ public class Configuration {
 	private boolean reportJson = false;
 	private boolean reportPatch = false;
 	private boolean scanForLog4j1 = false;
+	private boolean scanForCommonsText = false;
 	private boolean scanForLogback = false;
 	private boolean noEmptyReport = false;
 	private boolean oldExitCode = false;
@@ -66,11 +67,13 @@ public class Configuration {
 	private File jsonLogPath = null;
 
 	public static void pringUsage() {
-		System.out.println("Usage: log4j2-scan [--scan-log4j1] [--fix] target_path1 target_path2");
+		System.out.println("Usage: multi-scan [--scan-commonstext] [--fix] target_path1 target_path2");
 		System.out.println("");
 		System.out.println("-f [config_file_path]");
 		System.out.println("\tSpecify config file path which contains scan target paths.\n"
 				+ "\tPaths should be separated by new line. Prepend # for comment.");
+		System.out.println("--scan-commonstext");
+		System.out.println("\tEnables scanning for commons-txt versions only.");
 		System.out.println("--scan-log4j1");
 		System.out.println("\tEnables scanning for log4j 1 versions.");
 		System.out.println("--scan-logback");
@@ -213,6 +216,8 @@ public class Configuration {
 				i++;
 			} else if (args[i].equals("--no-symlink")) {
 				c.noSymlink = true;
+			} else if (args[i].equals("--scan-commonstext")) {
+				c.scanForCommonsText = true;
 			} else if (args[i].equals("--scan-log4j1")) {
 				c.scanForLog4j1 = true;
 			} else if (args[i].equals("--scan-logback")) {
@@ -686,6 +691,10 @@ public class Configuration {
 
 	public boolean isScanForLog4j1() {
 		return scanForLog4j1;
+	}
+
+	public boolean isScanForCommonsText() {
+		return scanForCommonsText;
 	}
 
 	public boolean isScanForLogback() {
