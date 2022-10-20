@@ -21,7 +21,7 @@ public class MultiScanner {
 		try {
 			System.out.println(BANNER);
 			int returnCode = run(args);
-			System.exit(-1);
+			System.exit(returnCode);
 		} catch (Throwable t) {
 			System.out.println("Error: " + t.getMessage());
 			if (!(t instanceof IllegalArgumentException))
@@ -30,6 +30,11 @@ public class MultiScanner {
 		}
 	}
 	public static int run(String[] args) throws Exception {
+		if (args.length < 1) {
+			Configuration.pringUsage();
+			return 0;
+		}
+
 		Configuration config = Configuration.parseArguments(args);
 		int returnCode;
 
