@@ -33,12 +33,12 @@ public class Log4j2Scanner {
 	public static final String RELEASE_DATE = "2022-02-14";
 	public static final String BANNER = "Logpresso CVE-2021-44228 Vulnerability Scanner " + VERSION + " (" + RELEASE_DATE + ")";
 
-	private static final boolean isWindows = File.separatorChar == '\\';
+	protected static final boolean isWindows = File.separatorChar == '\\';
 
-	private Configuration config;
-	private Metrics metrics;
-	private Detector detector;
-	private LogGenerator logGenerator;
+	protected Configuration config;
+	protected Metrics metrics;
+	protected Detector detector;
+	protected LogGenerator logGenerator;
 
 
 	public int run(Configuration config) throws Exception {
@@ -98,7 +98,7 @@ public class Log4j2Scanner {
 		return 0;
 	}
 
-	private void restore(InputStream is, File targetFile) {
+	protected void restore(InputStream is, File targetFile) {
 		// set writable if file is read-only
 		boolean readonlyFile = false;
 		if (!targetFile.canWrite()) {
@@ -551,7 +551,7 @@ public class Log4j2Scanner {
 		metrics.setLastStatusLogging();
 	}
 
-	private boolean isExcludedDirectory(String path) {
+	protected boolean isExcludedDirectory(String path) {
 		if (isWindows && path.toUpperCase().indexOf("$RECYCLE.BIN") == 3)
 			return true;
 

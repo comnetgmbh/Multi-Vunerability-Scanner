@@ -19,13 +19,6 @@ import java.util.zip.ZipOutputStream;
 
 public class CommonsTextScanner extends Log4j2Scanner {
 
-	private static final boolean isWindows = File.separatorChar == '\\';
-
-	private Configuration config;
-	private Metrics metrics;
-	private Detector detector;
-	private LogGenerator logGenerator;
-
 	public int run(Configuration config) throws Exception {
 		this.config = config;
 		metrics = new Metrics(config.getThrottle());
