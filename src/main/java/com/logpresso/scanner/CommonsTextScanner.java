@@ -47,9 +47,11 @@ public class CommonsTextScanner extends Log4j2Scanner {
 	}
 
 	public int scanAndFix() throws IOException {
+		System.out.println("scanAndFix with " + this.getClass().getSimpleName());
+
 		metrics.setScanStartTime(System.currentTimeMillis());
 		logGenerator = new LogGenerator(config);
-		detector = new Detector(config);
+		detector = new CommonsTextDetector(config);
 		detector.addLogListener(logGenerator);
 
 		try {

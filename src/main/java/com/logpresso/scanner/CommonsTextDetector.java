@@ -11,7 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
-public class CommonsTextDetector {
+public class CommonsTextDetector extends Detector {
 	private static final String POTENTIALLY_VULNERABLE = "N/A";
 
 	private static final String SUBSTITUTRE_CLASS_PATH = "org/apache/commons/text/StringSubstitutor.class";
@@ -34,6 +34,7 @@ public class CommonsTextDetector {
 	private Set<LogListener> logListeners = new CopyOnWriteArraySet<LogListener>();
 
 	public CommonsTextDetector(Configuration config) {
+		super(config);
 		this.config = config;
 	}
 
@@ -180,10 +181,6 @@ public class CommonsTextDetector {
 		String commonsTextVersion = null;
 
 		boolean commonsTextMitigated = true;
-
-		// logback class
-		boolean foundJndiUtil = false;
-		boolean foundEnvUtil = false;
 
 		// shade class
 		Set<String> shadedLookupPaths = new TreeSet<String>();
