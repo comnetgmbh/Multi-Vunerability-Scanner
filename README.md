@@ -1,22 +1,20 @@
-![Logpresso Logo](logo.png)
+Multi Vunerability Scanner is a single binary command-line tool for CVE-2021-44228 vulnerability scanning and mitigation patch. It also supports nested JAR file scanning and patch. It also detects CVE-2021-45046 (log4j 2.15.0), CVE-2021-45105 (log4j 2.16.0), CVE-2021-44832 (log4j 2.17.0), CVE-2021-4104, CVE-2019-17571, CVE-2017-5645, CVE-2020-9488, CVE-2022-23302, CVE-2022-23305, CVE-2022-23307 (log4j 1.x), and CVE-2021-42550 (logback 0.9-1.2.7) vulnerabilities.
 
-log4j2-scan is a single binary command-line tool for CVE-2021-44228 vulnerability scanning and mitigation patch. It also supports nested JAR file scanning and patch. It also detects CVE-2021-45046 (log4j 2.15.0), CVE-2021-45105 (log4j 2.16.0), CVE-2021-44832 (log4j 2.17.0), CVE-2021-4104, CVE-2019-17571, CVE-2017-5645, CVE-2020-9488, CVE-2022-23302, CVE-2022-23305, CVE-2022-23307 (log4j 1.x), and CVE-2021-42550 (logback 0.9-1.2.7) vulnerabilities.
+It also supports scanning for Vulnerabilities in Apache Commons Text.
 
-### Log4j Risk Management
-You can integrate log4j2-scan with [Logpresso Watch](https://logpresso.watch) service for reporting and patch management. Visit https://logpresso.watch for details.
+[//]: # (### Download)
+[//]: # (* [log4j2-scan 3.0.1 &#40;Windows x64, 7z&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-win64.7z&#41;)
+[//]: # (* [log4j2-scan 3.0.1 &#40;Windows x64, zip&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-win64.zip&#41;)
+[//]: # (  * If you get `VCRUNTIME140.dll not found` error, install [Visual C++ Redistributable]&#40;https://docs.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170&#41;.)
+[//]: # (  * If native executable doesn't work, use the JAR instead. 32bit is not supported.  )
+[//]: # (  * 7zip is available from www.7zip.org, and is open source and free.)
+[//]: # (* [log4j2-scan 3.0.1 &#40;Linux x64&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-linux.tar.gz&#41;)
+[//]: # (* [log4j2-scan 3.0.1 &#40;Linux aarch64&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-linux-aarch64.tar.gz&#41;)
+[//]: # (  * If native executable doesn't work, use the JAR instead. 32bit is not supported.)
+[//]: # (* [log4j2-scan 3.0.1 &#40;Mac OS&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-darwin.zip&#41;)
+[//]: # (* [log4j2-scan 3.0.1 &#40;Any OS, 620KB&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1.jar&#41;)
 
-### Download
-* [log4j2-scan 3.0.1 (Windows x64, 7z)](https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-win64.7z)
-* [log4j2-scan 3.0.1 (Windows x64, zip)](https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-win64.zip)
-  * If you get `VCRUNTIME140.dll not found` error, install [Visual C++ Redistributable](https://docs.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170).
-  * If native executable doesn't work, use the JAR instead. 32bit is not supported.  
-  * 7zip is available from www.7zip.org, and is open source and free.
-* [log4j2-scan 3.0.1 (Linux x64)](https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-linux.tar.gz)
-* [log4j2-scan 3.0.1 (Linux aarch64)](https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-linux-aarch64.tar.gz)
-  * If native executable doesn't work, use the JAR instead. 32bit is not supported.
-* [log4j2-scan 3.0.1 (Mac OS)](https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-darwin.zip)
-* [log4j2-scan 3.0.1 (Any OS, 620KB)](https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1.jar)
-
+Below follows the original README.md:
 ### Build
 * [How to build Native Image](https://github.com/logpresso/CVE-2021-44228-Scanner/wiki/FAQ#how-to-build-native-image)
 
