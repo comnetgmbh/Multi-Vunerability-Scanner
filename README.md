@@ -2,24 +2,21 @@ Multi Vunerability Scanner is a single binary command-line tool for CVE-2021-442
 
 It also supports scanning for Vulnerabilities in Apache Commons Text.
 
-[//]: # (### Download)
-[//]: # (* [log4j2-scan 3.0.1 &#40;Windows x64, 7z&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-win64.7z&#41;)
-[//]: # (* [log4j2-scan 3.0.1 &#40;Windows x64, zip&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-win64.zip&#41;)
-[//]: # (  * If you get `VCRUNTIME140.dll not found` error, install [Visual C++ Redistributable]&#40;https://docs.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170&#41;.)
-[//]: # (  * If native executable doesn't work, use the JAR instead. 32bit is not supported.  )
-[//]: # (  * 7zip is available from www.7zip.org, and is open source and free.)
-[//]: # (* [log4j2-scan 3.0.1 &#40;Linux x64&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-linux.tar.gz&#41;)
-[//]: # (* [log4j2-scan 3.0.1 &#40;Linux aarch64&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-linux-aarch64.tar.gz&#41;)
-[//]: # (  * If native executable doesn't work, use the JAR instead. 32bit is not supported.)
-[//]: # (* [log4j2-scan 3.0.1 &#40;Mac OS&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1-darwin.zip&#41;)
-[//]: # (* [log4j2-scan 3.0.1 &#40;Any OS, 620KB&#41;]&#40;https://github.com/logpresso/CVE-2021-44228-Scanner/releases/download/v3.0.1/logpresso-log4j2-scan-3.0.1.jar&#41;)
+### Download
+* [multi-scanner 3.0.1 (Windows x64, exe)](https://github.com/comnetgmbh/Multi-Vunerability-Scanner/releases/download/v3.0.1/multi-scanner.exe)
+  * If you get `VCRUNTIME140.dll not found` error, install [Visual C++ Redistributable](&#40;)https://docs.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170).
+  * If native executable doesn't work, use the JAR instead. 32bit is not supported.
+* [multi-scanner 3.0.1 (Linux x64)](https://github.com/comnetgmbh/Multi-Vunerability-Scanner/releases/download/v3.0.1/multi-scanner-linux-amd64)
+  * If native executable doesn't work, use the JAR instead. 32bit is not supported.
+* [multi-scanner 3.0.1 (Mac OS)](https://github.com/comnetgmbh/Multi-Vunerability-Scanner/releases/download/v3.0.1/multi-scanner-mac-amd64)
+* [multi-scanner 3.0.1 (Any OS)](https://github.com/comnetgmbh/Multi-Vunerability-Scanner/releases/download/v3.0.1/multi-scanner-3.0.1.jar)
 
-Below follows the original README.md:
+Below follows, with some usability additions, the original README.md:
 ### Build
 * [How to build Native Image](https://github.com/logpresso/CVE-2021-44228-Scanner/wiki/FAQ#how-to-build-native-image)
 
 ### How to use
-Just run log4j2-scan.exe or log4j2-scan with target directory path. The logpresso-log4j2-scan.jar should work with JRE/JDK 7+
+Just run multi-scanner.exe or multi-scanner with target directory path.
 
 `--fix` option is supported for following vulnerabilities:
 * Log4j v2
@@ -44,12 +41,14 @@ Just run log4j2-scan.exe or log4j2-scan with target directory path. The logpress
 
 Usage
 ```
-Logpresso CVE-2021-44228 Vulnerability Scanner 3.0.1 (2022-02-13)
-Usage: log4j2-scan [--scan-log4j1] [--fix] target_path1 target_path2
+Multi Vulnerability Scanner (2022-10-21)
+Usage: multi-scan [--scan-commonstext] [--fix] target_path1 target_path2
 
 -f [config_file_path]
         Specify config file path which contains scan target paths.
         Paths should be separated by new line. Prepend # for comment.
+--scan-commonstext
+        Enables scanning for commons-txt versions only.
 --scan-log4j1
         Enables scanning for log4j 1 versions.
 --scan-logback
@@ -138,15 +137,11 @@ Usage: log4j2-scan [--scan-log4j1] [--fix] target_path1 target_path2
 
 On Windows
 ```
-log4j2-scan [--fix] target_path
+multi-scanner [--fix] target_path
 ```
 On Linux
 ```
-./log4j2-scan [--fix] target_path
-```
-On UNIX (AIX, Solaris, and so on)
-```
-java -jar logpresso-log4j2-scan-3.0.1.jar [--fix] target_path
+./multi-scanner [--fix] target_path
 ```
 
 If you add `--fix` option, this program will copy vulnerable original JAR file to .bak file, and create new JAR file without `org/apache/logging/log4j/core/lookup/JndiLookup.class` entry. All .bak files are archived into the single zip file which is named by `log4j2_scan_backup_yyyyMMdd_HHmmss.zip`, then deleted safely. In most environments, JNDI lookup feature will not be used. However, you must use this option at your own risk. You can easily restore original vulnerable JAR files using `--restore` option.
@@ -164,7 +159,7 @@ If you add `--trace` option, this program will print all visited directories and
 
 On Windows:
 ```
-CMD> log4j2-scan.exe D:\tmp
+CMD> multi-scanner.exe D:\tmp
 [*] Found CVE-2021-44228 vulnerability in D:\tmp\elasticsearch-7.16.0\bin\elasticsearch-sql-cli-7.16.0.jar, log4j 2.11.1
 [*] Found CVE-2021-44228 vulnerability in D:\tmp\elasticsearch-7.16.0\lib\log4j-core-2.11.1.jar, log4j 2.11.1
 [*] Found CVE-2021-44228 vulnerability in D:\tmp\flink-1.14.0\lib\log4j-core-2.14.1.jar, log4j 2.14.1
@@ -203,7 +198,3 @@ Run in 5 steps:
 
 ### Contact
 If you have any question or issue, create an issue in this repository.
-
-### About Logpresso
-Logpresso is a leading company in the AI and big data industry located in South Korea.
-Logpresso provides SIEM, SOAR, Log management, and FDS solutions with its own big data platform.
