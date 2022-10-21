@@ -1,6 +1,6 @@
 Multi Vunerability Scanner is a single binary command-line tool for CVE-2021-44228 vulnerability scanning and mitigation patch. It also supports nested JAR file scanning and patch. It also detects CVE-2021-45046 (log4j 2.15.0), CVE-2021-45105 (log4j 2.16.0), CVE-2021-44832 (log4j 2.17.0), CVE-2021-4104, CVE-2019-17571, CVE-2017-5645, CVE-2020-9488, CVE-2022-23302, CVE-2022-23305, CVE-2022-23307 (log4j 1.x), and CVE-2021-42550 (logback 0.9-1.2.7) vulnerabilities.
 
-It also supports scanning for Vulnerabilities in Apache Commons Text.
+It also supports scanning for in Apache Commons Text for the Vulnerability CVE-2022-42889.
 
 ### Download
 * [multi-scanner 3.0.1 (Windows x64, exe)](https://github.com/comnetgmbh/Multi-Vunerability-Scanner/releases/download/v3.0.1/multi-scanner.exe)
