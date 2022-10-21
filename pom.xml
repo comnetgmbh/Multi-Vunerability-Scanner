@@ -4,11 +4,11 @@
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
+	<packaging>jar</packaging>
 	<groupId>com.logpresso</groupId>
 	<artifactId>multi-scanner</artifactId>
-	<version>3.0.1</version>
-	<packaging>jar</packaging>
 	<name>Multi Vunerability Scanner</name>
+	<version>3.0.1</version>
 
 	<licenses>
 		<license>
